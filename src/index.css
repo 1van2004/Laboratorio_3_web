@@ -491,7 +491,6 @@ a {
   font-size: 0.85rem;
   color: #a8bedc;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 40px;
