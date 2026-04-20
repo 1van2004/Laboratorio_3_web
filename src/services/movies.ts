@@ -95,9 +95,10 @@ export async function fetchMovieRecommendations(
     id: String(movie.id),
     type: "movie",
     title: movie.title ?? "Sin título",
-    subtitle: movie.original_title && movie.original_title !== movie.title
-      ? movie.original_title
-      : "",
+    subtitle:
+      movie.original_title && movie.original_title !== movie.title
+        ? movie.original_title
+        : "",
     description: movie.overview ?? "Sin descripción disponible.",
     image: movie.poster_path ? `${TMDB_IMAGE_BASE}${movie.poster_path}` : undefined,
     year: movie.release_date ? String(movie.release_date).slice(0, 4) : "",

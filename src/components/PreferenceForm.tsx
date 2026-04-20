@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Preferences, ContentType } from "../types";
+import type { Preferences } from "../types";
 
 interface Props {
   onSubmit: (data: Preferences) => void;
@@ -7,9 +7,8 @@ interface Props {
 }
 
 const initialState: Preferences = {
-  contentType: "both",
+  contentType: "movies",
   genres: "",
-  authors: "",
   actors: "",
 };
 
@@ -17,14 +16,10 @@ export default function PreferenceForm({ onSubmit, loading }: Props) {
   const [form, setForm] = useState<Preferences>(initialState);
 
   function handleChange(
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    event: React.ChangeEvent<HTMLInputElement>
   ) {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-  }
-
-  function setContentType(type: ContentType) {
-    setForm((prev) => ({ ...prev, contentType: type }));
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -37,34 +32,8 @@ export default function PreferenceForm({ onSubmit, loading }: Props) {
       <h2 className="panel-title">PREFERENCES & FILTERS</h2>
 
       <div className="toggle-group">
-        <button
-          type="button"
-          className={`toggle-btn ${
-            form.contentType === "movies" ? "active" : ""
-          }`}
-          onClick={() => setContentType("movies")}
-        >
+        <button type="button" className="toggle-btn active">
           Películas
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-btn ${
-            form.contentType === "books" ? "active" : ""
-          }`}
-          onClick={() => setContentType("books")}
-        >
-          Libros
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-btn ${
-            form.contentType === "both" ? "active" : ""
-          }`}
-          onClick={() => setContentType("both")}
-        >
-          Ambos
         </button>
       </div>
 
@@ -76,18 +45,6 @@ export default function PreferenceForm({ onSubmit, loading }: Props) {
           name="genres"
           placeholder="Ej: acción, fantasía, drama"
           value={form.genres}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="authors">Autores Favoritos</label>
-        <input
-          id="authors"
-          type="text"
-          name="authors"
-          placeholder="Ej: Stephen King, Tolkien"
-          value={form.authors}
           onChange={handleChange}
         />
       </div>

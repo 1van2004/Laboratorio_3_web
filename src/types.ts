@@ -1,15 +1,14 @@
-export type ContentType = "movies" | "books" | "both";
+export type ContentType = "movies";
 
 export interface Preferences {
   contentType: ContentType;
   genres: string;
-  authors: string;
   actors: string;
 }
 
 export interface RecommendationItem {
   id: string;
-  type: "movie" | "book";
+  type: "movie";
   title: string;
   subtitle?: string;
   description: string;
