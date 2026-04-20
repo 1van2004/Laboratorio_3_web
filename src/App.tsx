@@ -36,19 +36,29 @@ export default function App() {
     }
   }
 
+  function goTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
   async function handleSearch(preferences: Preferences) {
     setLastPreferences(preferences);
     await fetchPage(preferences, 1);
+    goTop();
   }
 
   async function handlePreviousPage() {
     if (!lastPreferences || currentPage <= 1) return;
     await fetchPage(lastPreferences, currentPage - 1);
+    goTop();
   }
 
   async function handleNextPage() {
     if (!lastPreferences || currentPage >= totalPages) return;
     await fetchPage(lastPreferences, currentPage + 1);
+    goTop();
   }
 
   return (
@@ -62,6 +72,9 @@ export default function App() {
           </div>
         </div>
 
+        <div className="topbar-center">
+          <div className="fake-search">Búsqueda</div>
+        </div>
       </header>
 
       <section className="content-layout">

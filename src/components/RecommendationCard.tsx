@@ -1,10 +1,23 @@
+import { useState } from "react";
 import type { RecommendationItem } from "../types";
 
 interface Props {
   item: RecommendationItem;
 }
 
+const DESCRIPTION_LIMIT = 140;
+
 export default function RecommendationCard({ item }: Props) {
+  const [expanded, setExpanded] = useState(false);
+
+  const fullDescription = item.description || "Sin descripción disponible.";
+  const isLongDescription = fullDescription.length > DESCRIPTION_LIMIT;
+
+  const visibleDescription =
+    expanded || !isLongDescription
+      ? fullDescription
+      : `${fullDescription.slice(0, DESCRIPTION_LIMIT).trim()}...`;
+
   return (
     <article className="recommendation-card">
       <div className="card-image-wrapper">
@@ -28,9 +41,21 @@ export default function RecommendationCard({ item }: Props) {
           {item.year ? ` • ${item.year}` : ""}
         </p>
 
-        <p className="card-description">
-          {item.description || "Sin descripción disponible."}
-        </p>
+        <div className="card-description-box">
+          <p className={`card-description ${expanded ? "expanded" : ""}`}>
+            {visibleDescription}
+          </p>
+
+          {isLongDescription && (
+            <button
+              type="button"
+              className="card-toggle-btn"
+              onClick={() => setExpanded((prev) => !prev)}
+            >
+              {expanded ? "Ver menos" : "Ver más"}
+            </button>
+          )}
+        </div>
 
         <p className="card-reason">{item.reason}</p>
 
