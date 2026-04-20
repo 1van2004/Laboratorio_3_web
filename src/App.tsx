@@ -62,9 +62,6 @@ export default function App() {
           </div>
         </div>
 
-        <div className="topbar-center">
-          <div className="fake-search">Búsqueda</div>
-        </div>
       </header>
 
       <section className="content-layout">
