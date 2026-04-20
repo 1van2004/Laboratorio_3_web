@@ -19,3 +19,10 @@ export interface RecommendationItem {
   link: string;
   reason: string;
 }
+
+export interface RecommendationResponse {
+  results: RecommendationItem[];
+  page: number;
+  totalPages: number;
+  totalResults: number;
+}

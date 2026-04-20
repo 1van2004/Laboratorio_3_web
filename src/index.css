@@ -405,3 +405,41 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+.results-count {
+  margin: 8px 0 0 0;
+  color: #9cb4d3;
+  font-size: 0.95rem;
+}
+
+.pagination {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  min-width: 120px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(180deg, #1fa2ff 0%, #0f70e1 100%);
+  box-shadow: 0 8px 18px rgba(31, 162, 255, 0.18);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pagination-info {
+  color: #d7e6fa;
+  font-weight: 600;
+}
