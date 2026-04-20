@@ -131,28 +131,28 @@ export async function fetchMovieRecommendations(
 
   const movies = Array.isArray(data.results) ? data.results : [];
 
-  const results: RecommendationItem[] = movies.map((movie): RecommendationItem => ({
-    id: String(movie.id),
-    type: "movie",
-    title: movie.title ?? "Sin título",
-    subtitle:
-      movie.original_title && movie.original_title !== movie.title
-        ? movie.original_title
-        : "",
-    description: movie.overview ?? "Sin descripción disponible.",
-    image: movie.poster_path
-      ? `${TMDB_IMAGE_BASE}${movie.poster_path}`
-      : undefined,
-    year: movie.release_date ? String(movie.release_date).slice(0, 4) : "",
-    rating:
-      typeof movie.vote_average === "number" ? movie.vote_average : undefined,
-    extraInfo:
-      genres.length > 0
-        ? `Géneros buscados: ${genres.join(", ")}`
-        : "Resultados de TMDb",
-    link: `https://www.themoviedb.org/movie/${movie.id}`,
-    reason: buildReason(genres, actors),
-  }));
+const results: RecommendationItem[] = movies.map((movie: any): RecommendationItem => ({
+  id: String(movie.id),
+  type: "movie",
+  title: movie.title ?? "Sin título",
+  subtitle:
+    movie.original_title && movie.original_title !== movie.title
+      ? movie.original_title
+      : "",
+  description: movie.overview ?? "Sin descripción disponible.",
+  image: movie.poster_path
+    ? `${TMDB_IMAGE_BASE}${movie.poster_path}`
+    : undefined,
+  year: movie.release_date ? String(movie.release_date).slice(0, 4) : "",
+  rating:
+    typeof movie.vote_average === "number" ? movie.vote_average : undefined,
+  extraInfo:
+    genres.length > 0
+      ? `Géneros buscados: ${genres.join(", ")}`
+      : "Resultados de TMDb",
+  link: `https://www.themoviedb.org/movie/${movie.id}`,
+  reason: buildReason(genres, actors),
+}));
 
   return {
     results,
