@@ -4,6 +4,8 @@ import type {
   RecommendationResponse,
 } from "../types";
 
+import { callOpenAI } from "./openai";
+
 const TMDB_API = "https://api.themoviedb.org/3";
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 const TMDB_BEARER_TOKEN = import.meta.env.VITE_TMDB_BEARER_TOKEN;
@@ -50,6 +52,10 @@ async function getGenreMap(): Promise<Map<string, number>> {
   return map;
 }
 
+function safeArray(value: any): string[] {
+  return Array.isArray(value) ? value : [];
+}
+
 async function searchPersonIds(actorNames: string[]): Promise<number[]> {
   const ids: number[] = [];
 
@@ -83,12 +89,53 @@ function buildReason(genres: string[], actors: string[]): string {
   return "Se muestra por popularidad porque no ingresaste filtros específicos.";
 }
 
+async function getSmartPreferences(preferences: Preferences) {
+  const prompt = `
+El usuario quiere recomendaciones de películas.
+
+Preferencias actuales:
+- Géneros: ${preferences.genres}
+- Actores: ${preferences.actors}
+
+Devuelve JSON:
+{
+  "genres": [],
+  "actors": [],
+  "reason": ""
+}
+
+Reglas:
+- Puedes corregir errores
+- Puedes agregar géneros relacionados
+- Puedes sugerir actores similares
+- Mantén coherencia con la intención original
+`;
+
+  try {
+    const result = await callOpenAI(prompt);
+
+    return {
+      genres: safeArray(result.genres).join(", ") || preferences.genres,
+actors: safeArray(result.actors).join(", ") || preferences.actors,
+      aiReason: result.reason ?? "",
+    };
+  } catch (error) {
+    console.warn("Fallback sin IA");
+    return {
+      ...preferences,
+      aiReason: "",
+    };
+  }
+}
+
 export async function fetchMovieRecommendations(
-  preferences: Preferences,
+   preferences: Preferences,
   page = 1
 ): Promise<RecommendationResponse> {
-  const genres = splitAndClean(preferences.genres);
-  const actors = splitAndClean(preferences.actors);
+const smart = await getSmartPreferences(preferences);
+
+const genres = splitAndClean(smart.genres);
+const actors = splitAndClean(smart.actors);
 
   const genreMap = await getGenreMap();
 
@@ -131,6 +178,8 @@ export async function fetchMovieRecommendations(
 
   const movies = Array.isArray(data.results) ? data.results : [];
 
+
+
 const results: RecommendationItem[] = movies.map((movie: any): RecommendationItem => ({
   id: String(movie.id),
   type: "movie",
@@ -151,7 +200,8 @@ const results: RecommendationItem[] = movies.map((movie: any): RecommendationIte
       ? `Géneros buscados: ${genres.join(", ")}`
       : "Resultados de TMDb",
   link: `https://www.themoviedb.org/movie/${movie.id}`,
-  reason: buildReason(genres, actors),
+  reason: smart.aiReason || buildReason(genres, actors),
+  
 }));
 
   return {
